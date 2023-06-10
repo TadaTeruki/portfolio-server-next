@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+
+  # Webサーバー用のコンテナ
+  portfolio-server:
+    # container_nameでコンテナ名を指定する
+    container_name: portfolio-server
+    # buildでDockerfileを指定することで、Dockerfileからイメージをビルドする
+    # そのため、既存のイメージの指定はない
+    build:
+      dockerfile: ./build/Dockerfile
+    # ttyをtrueにすることで、コンテナ内に入ってコマンドを実行できる
+    # (docker exec -it portfolio-server bash)
+    tty: true
+    # volumesでローカルのファイルをコンテナにマウントできる
+    volumes:
+      - ./:/app
+    # 3000をローカルに開放する
+    ports:
+      - 3000:3000
+
+  # DB用のコンテナ (PostgreSQL)
+  postgres:
+    # container_name (上記参照)
+    container_name: portfolio-db
+    # イメージを指定する
+    # 既存のイメージを指定しているため、buildは不要
+    image: postgres:15-alpine
+    # tty (上記参照)
+    tty: true
+    # volumes (上記参照)
+    volumes:
+      - ./db/postgres/init:/docker-entrypoint-initdb.d
+    # 5432 (上記参照)
+    # 5432はPostgreSQLのデフォルトのポート番号
+    ports:
+      - 5432:5432
+    # 環境変数を設定することで、コンテナ内で使用できる
+    # 各環境変数は.envファイルから読み込む
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
