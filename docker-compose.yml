@@ -16,7 +16,7 @@ services:
     # volumesでローカルのファイルをコンテナにマウントできる
     volumes:
       - ./:/app
-    # 3000をローカルに開放する
+    # portsで3000をローカルに開放する
     ports:
       - 3000:3000
 
@@ -32,7 +32,7 @@ services:
     # volumes (上記参照)
     volumes:
       - ./db/postgres/init:/docker-entrypoint-initdb.d
-    # 5432 (上記参照)
+    # ports (上記参照)
     # 5432はPostgreSQLのデフォルトのポート番号
     ports:
       - 5432:5432

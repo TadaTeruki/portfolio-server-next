@@ -16,6 +16,8 @@ WORKDIR /app
 
 # ホストのgo.modとgo.sumをコンテナの作業ディレクトリにコピー
 COPY go.mod go.sum ./
+
+# go.modとgo.sumを使って、依存関係をダウンロード
 RUN go mod download
 
 # ホストのファイルをコンテナの作業ディレクトリにコピー
