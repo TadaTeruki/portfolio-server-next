@@ -1,0 +1,546 @@
+openapi: 3
+
+info:
+  title: portforlo-server
+  description: ポートフォリオのバックエンドサーバー
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+    - name: utility
+      description: 各種機能のAPI
+    - name: auth
+      description: 認証を管理するAPI
+    - name: article
+      description: 記事を管理するAPI
+    - name: articles
+      description: 複数の記事を管理するAPI
+    - name: activity
+      description: 活動を管理するAPI
+    - name: activities
+      description: 複数の活動を管理するAPI
+    - name: photo
+      description: 写真を管理するAPI
+    - name: photos
+      description: 複数の写真を管理するAPI
+
+paths:
+  /:
+    get:
+      tags:
+        - utility
+      summary: 接続を確認する
+      responses:
+        '200':
+          description: OK
+  /login:
+    post:
+      tags:
+        - auth
+      summary: ownerとしてログインする
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/LoginAsOwner'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /article:
+    post:
+      tags:
+        - article
+      summary: 記事を投稿する
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/PostArticle'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+  /article/{articleID}:
+    get:
+      tags:
+        - article
+      summary: 記事を1つ取得する
+      parameters:
+        - in: path
+          name: articleID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetArticle'
+    delete:
+      tags:
+        - article
+      summary: 記事を削除する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: articleID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+    put:
+      tags:
+        - article
+      summary: 記事を更新する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: articleID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/UpdateArticle'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+
+  /articles:
+    get:
+      tags:
+        - articles
+      summary: 複数の記事の要約情報を取得する
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/ListArticles'
+
+  /activity:
+    post:
+      tags:
+        - activity
+      summary: 活動を投稿する
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Activity'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+
+  /activity/{activityID}:
+    get:
+      tags:
+        - activity
+      summary: 活動を1つ取得する
+      parameters:
+        - in: path
+          name: activityID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+    delete:
+      tags:
+        - activity
+      summary: 活動を削除する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: activityID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+    put:
+      tags:
+        - activity
+      summary: 活動を更新する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: activityID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Activity'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleID'
+    
+  /activities:
+    get:
+      tags:
+        - activities
+      summary: 複数の活動の要約情報を取得する
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/ListActivities'
+  
+  /photo:
+    post:
+      tags:
+        - photo
+      summary: 写真を投稿する
+      security:
+        - Bearer: []
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Photo'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoID'
+  
+  /photo/{photoID}:
+    get:
+      tags:
+        - photo
+      summary: 写真を1つ取得する
+      parameters:
+        - in: path
+          name: photoID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Photo'
+    delete:
+      tags:
+        - photo
+      summary: 写真を削除する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: photoID
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoID'
+    put:
+      tags:
+        - photo
+      summary: 写真を更新する
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: photoID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/Photo'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoID'
+
+  /photos:
+    get:
+      tags:
+        - photos
+      summary: 複数の写真の要約情報を取得する
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json: 
+              schema:
+                $ref: '#/components/schemas/ListPhotos'
+
+components:
+  schemas:
+    PostArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        body:
+          type: string
+        thumbnail:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        is_public:
+          type: boolean
+    GetArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        body:
+          type: string
+        thumbnail:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        is_public:
+          type: boolean
+        creater_at:
+          type: string
+        updated_at:
+          type: string
+    UpdateArticle:
+      type: object
+      properties:
+        title:
+          type: string
+        subtitle:
+          type: string
+        body:
+          type: string
+        thumbnail:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        is_public:
+          type: boolean
+    ListArticles:
+      type: array
+      items:
+        $ref: '#/components/schemas/ListArticle'
+    ListArticle:
+      type: object
+      properties:
+        article_id:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        thumbnail:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        is_public:
+          type: boolean
+    ArticleID:
+      type: object
+      properties:
+        article_id:
+          type: string
+    Activity:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+        finish_date:
+          type: string
+        thumbnail:
+          type: string
+        is_public:
+          type: boolean
+        urls:
+          type: array
+          items:
+            type: object
+            properties:
+              url_description:
+                type: string
+              url:
+                type: string
+    ListActivity:
+      type: object
+      properties:
+        activity_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        start_date:
+          type: string
+        finish_date:
+          type: string
+        thumbnail:
+          type: string
+        is_public:
+          type: boolean
+        urls:
+          type: array
+          items:
+            type: object
+            properties:
+              url_description:
+                type: string
+              url:
+                type: string
+    ListActivities:
+      type: array
+      items:
+        $ref: '#/components/schemas/ListActivity'
+    ActivityID:
+      type: object
+      properties:
+        activity_id:
+          type: string
+    Photo:
+      type: object
+      properties:
+        image_url:
+          type: string
+        description:
+          type: string
+        is_public:
+          type: boolean
+        location:
+          type: string
+        date:
+          type: string
+    ListPhoto:
+      type: object
+      properties:
+        photo_id:
+          type: string
+        image_url:
+          type: string
+        description:
+          type: string
+        is_public:
+          type: boolean
+        location:
+          type: string
+        date:
+          type: string
+    ListPhotos:
+      type: array
+      items:
+        $ref: '#/components/schemas/ListPhoto'
+    PhotoID:
+      type: object
+      properties:
+        photo_id:
+          type: string
+    LoginAsOwner:
+      type: object
+      properties:
+        owner_id:
+          type: string
+        passwd:
+          type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
