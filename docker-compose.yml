@@ -6,10 +6,10 @@ services:
   portfolio-server:
     # container_nameでコンテナ名を指定する
     container_name: portfolio-server
-    # buildでDockerfileを指定することで、Dockerfileからイメージをビルドする
+    # buildでDockerfileを指定し、Dockerfileからイメージをビルドする
     # そのため、既存のイメージの指定はない
     build:
-      dockerfile: ./build/Dockerfile
+      context: .
     # ttyをtrueにすることで、コンテナ内に入ってコマンドを実行できる
     # (docker exec -it portfolio-server bash)
     tty: true
