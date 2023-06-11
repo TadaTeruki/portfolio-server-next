@@ -30,7 +30,7 @@ ENV CGO_ENABLED=0 \
     GOOS=linux 
 
 # ビルド
-RUN go build -o /portfolio-server command/main.go
+RUN go build -o /portfolio-server cmd/main.go
 
 # ビルドしたバイナリを実行
 CMD ["/portfolio-server"]
