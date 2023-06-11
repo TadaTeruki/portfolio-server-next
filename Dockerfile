@@ -4,10 +4,10 @@
 FROM golang:1.20-alpine
 
 # apkとは、Alpine Linuxのパッケージ管理ツール
-# Alpine Linuxには最初は何も入っていないので、まずはupdateを行う
-# その後、bashとgitをインストール
+# update後、bashとgitをインストール
 # 最後に、キャッシュを削除
 RUN apk update && \
+    apk upgrade && \
     apk add bash git && \
     rm -rf /var/cache/apk/*
 
